@@ -56,4 +56,4 @@ Uses Terraform to create a Kubernetes cluster. State is managed locally.
 
 GKE Compute nodes cost money. Terraform allows you to destroy the infrastructure and recreate it (using `plan` and `apply`) when it is needed again.
 
-        terraform destroy -var 'project_id=k8s-demo-303322' -target=google_container_cluster.primary
+        terraform destroy -var 'project_id=k8s-demo-123456' -target=google_container_cluster.primary
