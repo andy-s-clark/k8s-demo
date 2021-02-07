@@ -84,6 +84,30 @@ See the [Kind Quick Start](https://kind.sigs.k8s.io/docs/user/quick-start/#insta
 
 5. Open [the dashboard](http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/)
 
+### Load Demo
+
+1. Build Images
+
+        docker build -t demo/node-api:0.1 services/node-api
+        ...
+
+2. Load images into the cluster
+
+        kind --name demo load docker-image demo/node-api:0.1
+        ...
+
+3. Start the demo
+
+        kubectl apply -f kind/demo-workload.yaml
+
+4. Verify functionality
+
+        $ curl -isSk https://localhost/api/healthz
+        HTTP/2 200
+        ...
+
+        {"status":"up"}
+
 ### Clean-up
 
         kind delete cluster --name demo
