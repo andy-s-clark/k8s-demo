@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: echo-test
+  labels:
+    app: echo-test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: echo-test
+  template:
+    metadata:
+      labels:
+        app: echo-test
+    spec:
+      containers:
+      - name: echo-test
+        image: hashicorp/http-echo:0.2.3
+        args:
+        - "-text=Success"
+        ports:
+        - containerPort: 5678
+        resources:
+          requests:
+            memory: "2Mi"
+            cpu: "100m"
+          limits:
+            memory: "4Mi"
+            cpu: "200m"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: echo-test
+spec:
+  selector:
+    app: echo-test
+  ports:
+  - port: 5678
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: localhost-ingress-echo-minion
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.org/mergeable-ingress-type: "minion"
+spec:
+  rules:
+  - host: localhost
+    http:
+      paths:
+      - path: /echo
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: echo-test
+            port:
+              number: 5678
