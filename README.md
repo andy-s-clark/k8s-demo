@@ -6,7 +6,9 @@
 
 ### Pre-requisites
 
-* Docker
+* [Docker](https://docs.docker.com/get-docker/)
+* [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
+* [Helm](https://helm.sh/docs/intro/install/)
 
 ### Installation
 
@@ -80,7 +82,7 @@ See the [Kind Quick Start](https://kind.sigs.k8s.io/docs/user/quick-start/#insta
 
 4. Start a proxy
 
-        kubectl proxy &
+        kubectl proxy
 
 5. Open [the dashboard](http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/)
 
@@ -107,6 +109,19 @@ See the [Kind Quick Start](https://kind.sigs.k8s.io/docs/user/quick-start/#insta
         ...
 
         {"status":"up"}
+
+### DataDog Agent for Kubernetes
+
+1. Obtain your `DATADOG_API_KEY` from the [DataDog agent set up page](https://app.datadoghq.com/account/settings#agent/kubernetes) and save it as an environment variable.
+2. Set a custom name for your cluster as an environment variable.
+3. Install the daemon set using `helm`.
+
+        export DATADOG_API_KEY=REDACTED
+        export CLUSTER_NAME=kind-demo-jane-doe
+        helm repo add datadog https://helm.datadoghq.com
+        helm repo add stable https://charts.helm.sh/stable --force-update
+        helm repo update
+        helm install $CLUSTER_NAME -f datadog/k8s-agent-values.yaml --set datadog.clusterName=$CLUSTER_NAME --set datadog.apiKey=$DATADOG_API_KEY datadog/datadog 
 
 ### Clean-up
 

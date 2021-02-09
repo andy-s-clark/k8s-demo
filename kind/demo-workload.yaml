@@ -15,14 +15,26 @@ spec:
         app: node-api
     spec:
       containers:
-      - name: echo-test
+      - name: node-api
         image: demo/node-api:0.1
         imagePullPolicy: IfNotPresent
+        livenessProbe:
+          httpGet:
+            path: /api/healthz
+            port: 3000
+          initialDelaySeconds: 5
+          periodSeconds: 3
         env:
         - name: BASE_PATH
           value: "/api"
         - name: PORT
           value: "3000"
+        - name: DD_AGENT_HOST
+          valueFrom:
+            fieldRef:
+              fieldPath: status.hostIP
+        - name: ENABLE_DD
+          value: "true"
         ports:
         - containerPort: 3000
         resources:
