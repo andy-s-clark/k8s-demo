@@ -4,6 +4,10 @@ const express = require('express');
 const PORT = process.env.PORT || 3000;
 const BASE_PATH = process.env.BASE_PATH || '/';
 
+if (process.env.ENABLE_DD && process.env.ENABLE_DD === 'true') {
+    const tracer = require('dd-trace').init();
+}
+
 const app = express();
 
 app.get(`${BASE_PATH}/`, (req, res) => {

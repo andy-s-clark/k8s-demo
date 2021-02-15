@@ -4,6 +4,7 @@
   "description": "Simple Node ExpressJS API",
   "main": "index.js",
   "dependencies": {
+    "dd-trace": "^0.30.6",
     "express": "^4.17.1"
   },
   "devDependencies": {},
