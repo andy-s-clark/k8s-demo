@@ -1,4 +1,4 @@
-# Kubernetes Demo
+# Monitoring Demo
 
 ## Kind Project Set Up
 
@@ -90,11 +90,13 @@ See the [Kind Quick Start](https://kind.sigs.k8s.io/docs/user/quick-start/#insta
 
 1. Build Images
 
+        docker build -t demo/gc-thrasher:0.1 services/gc-thrasher
         docker build -t demo/node-api:0.1 services/node-api
         ...
 
 2. Load images into the cluster
 
+        kind --name demo load docker-image demo/gc-thrasher:0.1
         kind --name demo load docker-image demo/node-api:0.1
         ...
 

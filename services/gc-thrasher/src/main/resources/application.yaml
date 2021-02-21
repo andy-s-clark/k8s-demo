@@ -1,0 +1,21 @@
+---
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      base-path: /app
+      exposure:
+        include:
+          - health
+          - info
+          - metrics
+          - threaddump
+  server:
+    port: 9393
+gc:
+  thrash:
+    block:
+      size: 1000000
+    retries: 1000

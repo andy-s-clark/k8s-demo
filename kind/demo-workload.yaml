@@ -1,6 +1,56 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  name: gc-thrasher
+  labels:
+    app: gc-thrasher
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gc-thrasher
+  template:
+    metadata:
+      labels:
+        app: gc-thrasher
+    spec:
+      containers:
+      - name: gc-thrasher
+        image: demo/gc-thrasher:0.1
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          httpGet:
+            path: /app/health
+            port: 9393
+          initialDelaySeconds: 60
+          timeoutSeconds: 3
+          periodSeconds: 3
+        ports:
+        - containerPort: 8080
+        - containerPort: 9393
+        resources:
+          requests:
+            memory: "240Mi"
+            cpu: "100m"
+          limits:
+            memory: "500Mi"
+            cpu: "200m"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gc-thrasher
+spec:
+  selector:
+    app: gc-thrasher
+  ports:
+  - port: 8080
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
   name: node-api
   labels:
     app: node-api
