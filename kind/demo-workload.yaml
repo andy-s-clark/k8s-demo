@@ -22,9 +22,23 @@ spec:
           httpGet:
             path: /app/health
             port: 9393
-          initialDelaySeconds: 60
+          initialDelaySeconds: 120
           timeoutSeconds: 3
           periodSeconds: 3
+        args: ["-javaagent:/opt/app/dd-java-agent.jar", "-jar", "gc-thrasher.jar"]
+        env:
+        - name: DD_SERVICE
+          value: "gc-thrasher"
+        - name: DD_ENV
+          value: "local"
+        - name: DD_VERSION
+          value: "0.1"
+        - name: DD_AGENT_HOST
+          valueFrom:
+            fieldRef:
+              fieldPath: status.hostIP
+        - name: DD_LOGS_INJECTION
+          value: "true"
         ports:
         - containerPort: 8080
         - containerPort: 9393
@@ -33,7 +47,7 @@ spec:
             memory: "240Mi"
             cpu: "100m"
           limits:
-            memory: "500Mi"
+            memory: "400Mi"
             cpu: "200m"
 
 ---
@@ -79,11 +93,21 @@ spec:
           value: "/api"
         - name: PORT
           value: "3000"
+        - name: ENABLE_DD
+          value: "true"
         - name: DD_AGENT_HOST
           valueFrom:
             fieldRef:
               fieldPath: status.hostIP
-        - name: ENABLE_DD
+        - name: DD_SERVICE
+          value: "node-api"
+        - name: DD_ENV
+          value: "local"
+        - name: DD_VERSION
+          value: "0.1"
+        - name: DD_TRACE_ENABLED
+          value: "true"
+        - name: DD_LOGS_INJECTION
           value: "true"
         ports:
         - containerPort: 3000

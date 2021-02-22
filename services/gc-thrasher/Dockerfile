@@ -2,7 +2,8 @@
 FROM maven:3-openjdk-11 AS build
 WORKDIR /opt/app
 COPY . /opt/app
-RUN mvn --fail-at-end --batch-mode package
+RUN mvn --fail-at-end --batch-mode package \
+    && curl -L https://dtdg.co/latest-java-tracer --output dd-java-agent.jar
 
 # Setup run container
 FROM openjdk:11-jre-slim
@@ -16,10 +17,11 @@ RUN adduser --system javarole \
 WORKDIR /opt/app
 
 # Copy app from build containter
-COPY --from=build /opt/app/target/gc-thrasher.jar .
+COPY --from=build /opt/app/target/gc-thrasher.jar /opt/app/dd-java-agent.jar ./
 USER javarole
 EXPOSE 8080
 EXPOSE 9393
 
 # Run
-CMD java -jar gc-thrasher.jar
+ENTRYPOINT ["java"]
+CMD ["-jar", "gc-thrasher.jar"]
